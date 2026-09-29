@@ -1,0 +1,13 @@
+{
+  "python": "3.12.13 (main, Mar  4 2026, 09:23:07) [GCC 11.4.0]",
+  "platform": "Linux-6.12.90+-x86_64-with-glibc2.35",
+  "torch": "2.10.0+cu128",
+  "numpy": "2.0.2",
+  "pandas": "2.3.3",
+  "scipy": "1.16.3",
+  "scikit_image": "0.25.2",
+  "pyyaml": "6.0.3",
+  "device": "cuda",
+  "cuda_available": true,
+  "gpu": "Tesla T4"
+}

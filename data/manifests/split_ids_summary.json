@@ -1,0 +1,27 @@
+{
+  "step": "S2",
+  "protocol_section": "5.3",
+  "protocol_lock_hash": "94c9a6ef3a3a75ef2dfde58b7fa8e64ace8d664d5938313921d3a178465c2221",
+  "signed_by": "Kawser Sikder",
+  "signed_date": "2026-09-01",
+  "columns_read_from_clinical": [
+    "patient_id",
+    "Follow-up Status"
+  ],
+  "seed": 20260830,
+  "outer_folds": 5,
+  "outer_repeats": 10,
+  "stratified_on": "Follow-up Status",
+  "patients": 170,
+  "events": 58,
+  "held_out_events_per_fold": {
+    "min": 11,
+    "max": 12
+  },
+  "split_ids_sha256": "ff22e9826533116d817f90153ee77ff82eb3a5f99269ad0577edd58de324961e",
+  "environment": {
+    "python": "3.13.9",
+    "numpy": "2.3.5",
+    "pandas": "2.3.3"
+  }
+}

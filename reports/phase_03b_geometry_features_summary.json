@@ -1,0 +1,27 @@
+{
+  "purpose": "M2 released-geometry baseline (protocol \u00a73, model M2)",
+  "source": "data\\raw\\dlbcl_morph\\cell_shapes.csv",
+  "source_sha256": "0e82affc9078715fe3684f81ea294b5173e533b5a3c7cc816e425a18aeb10e15",
+  "cell_rows_in_cohort": 1035909,
+  "patients": 170,
+  "descriptors": 22,
+  "feature_columns": 44,
+  "positional_descriptors": [
+    "rectCenter_x",
+    "rectCenter_y",
+    "ellip_centroid_x",
+    "ellip_centroid_y"
+  ],
+  "positional_columns_ablated_by_S5": [
+    "rectCenter_x_mean",
+    "rectCenter_x_std",
+    "rectCenter_y_mean",
+    "rectCenter_y_std",
+    "ellip_centroid_x_mean",
+    "ellip_centroid_x_std",
+    "ellip_centroid_y_mean",
+    "ellip_centroid_y_std"
+  ],
+  "column_order_source": "survival_regression_original.ipynb geo_cols",
+  "output_sha256": "b49b612cd39eca68e27ccd62fbe25fd0bc2ee8a846b2a55438c09f44195bb03a"
+}

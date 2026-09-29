@@ -1,0 +1,96 @@
+experiment_id: E-007
+name: phase_03a_outcome_blind_full_feature_extraction
+seed: 20260828
+
+scope:
+  mode: full_extraction
+  expected_patient_count: 170
+  expected_patch_count: 30007
+  expected_patient_inventory_sha256: cdb1b0aed4c70325e7202cb7d3ca80a7ef490c3eb19edb6904ba8ea796b5e50c
+  expected_patch_inventory_sha256: 10d1e96e4b6789a12745dc274e61d99ee34b6f798097fc1b27e07d1c31548d97
+  selection_uses_outcomes: false
+  provisional_pending_pathology_review: true
+
+checkpoint:
+  name: e001_small_unet
+  md5: dea287c50949db8c6b7f6b7bfad87271
+
+postprocessing:
+  probability_threshold: 0.50
+  minimum_nucleus_area_px: 20
+  watershed_min_distance_px: 5
+  frozen_from_experiment: E-006
+  change_without_new_experiment: false
+
+object_qc:
+  border_touching: flag_and_exclude_from_primary_shape_summaries
+  primary_branch: no_additional_shape_filter
+  known_visual_failures:
+    - patient_id: "17649"
+      patch_id: "5053"
+      action: exclude_from_primary_and_record
+      reason: linear_non_nuclear_structure_fragmented_into_multiple_instances
+  sensitivity_branch:
+    enabled: true
+    bounds_source: lynsec_validation_object_distributions_only
+    purpose: test_effect_of_extreme_area_and_elongation_artifacts
+
+patch_qc:
+  tissue_pixel_definition: mean_rgb_below_threshold
+  tissue_pixel_mean_rgb_max: 235.0
+  minimum_tissue_fraction_for_patch_summaries: 0.50
+  partial_tissue_cells_in_per_cell_morphology: true
+  low_tissue_action: exclude_from_patch_level_summaries_and_record
+  rule_source: outcome_blind_e005_pilot_visual_qc_validated_in_e006
+  frozen_from_experiment: E-006
+  change_without_new_experiment: false
+
+features:
+  per_cell:
+    - area_px
+    - perimeter_px
+    - eccentricity
+    - solidity
+    - circularity
+    - major_axis_px
+    - minor_axis_px
+    - rgb_mean
+  within_patch_spatial:
+    - nucleus_count
+    - foreground_fraction
+    - nearest_neighbour_px
+    - delaunay_edge_px
+  patient_aggregation:
+    - median
+    - interquartile_range
+    - p10
+    - p90
+    - patch_level_median
+    - patch_level_interquartile_range
+  tumour_non_tumour_features: false
+  physical_unit_features: deferred_until_pixel_spacing_verified
+  cross_patch_spatial_graphs: false
+
+required_outputs:
+  - run_summary.json
+  - resolved_config.yaml
+  - environment.json
+  - patch_qc.csv
+  - exclusion_log.csv
+  - cells.parquet
+  - patient_features.csv
+  - feature_schema.json
+  - qc_overlays/
+
+promotion_gate:
+  all_170_image_patients_complete: true
+  expected_processed_patches: 30007
+  input_inventory_hashes_match: true
+  no_outcome_columns_loaded: true
+  patient_feature_rows: 170
+  finite_feature_fraction_min: 0.99
+  low_tissue_patches_recorded: true
+  every_patient_has_eligible_patch: true
+  partial_tissue_cell_morphology_retained: true
+  known_failure_patient_17649_flagged: true
+  pathology_review_required_before_outcome_join: true

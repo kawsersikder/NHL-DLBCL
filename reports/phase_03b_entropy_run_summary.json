@@ -1,0 +1,41 @@
+{
+  "experiment": "E-008",
+  "protocol_section": "4",
+  "outcome_blind": true,
+  "grayscale": "PIL convert('L') = ITU-R 601-2 luma",
+  "gray_levels": 256,
+  "tissue_masking": "none (deliberate \u2014 reproduces the published comparator)",
+  "eligibility_source": "/kaggle/input/datasets/kawsersikder/dlbcl-phase3b-inputs/patch_qc.csv",
+  "patches_total": 30007,
+  "patches_eligible": 29464,
+  "patients": 170,
+  "image_modes": {
+    "RGB": 30007
+  },
+  "smoke_mode": false,
+  "on_kaggle": true,
+  "patches_root": "/kaggle/input/datasets/kawsersikder/dlbcl-morph-patches/HE",
+  "feature_columns": [
+    "entropy_mean",
+    "entropy_median",
+    "entropy_iqr",
+    "entropy_p10",
+    "entropy_p90"
+  ],
+  "primary_covariate": "entropy_mean",
+  "patch_entropy_bits": {
+    "min": 2.8887760539071055,
+    "max": 7.869116717926957,
+    "mean": 7.4285941955619625
+  },
+  "sha256": {
+    "phase_03b_entropy_features.csv": "e26af3eb472aa1eb39fa08f5650d1d501e277c9b3ebe0c0c17d434cae6b4ec3c",
+    "phase_03b_entropy_patch_level.csv": "45197ad459487a8d9168c34306eca818dc489c61a93ace569554581c9b76d71a"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "pillow": "11.3.0"
+  }
+}

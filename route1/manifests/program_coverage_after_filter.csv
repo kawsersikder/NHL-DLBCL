@@ -1,0 +1,9 @@
+program,set_genes,available_in_universe,fraction,scoreable
+hallmark_angiogenesis,36,32,0.8889,True
+hallmark_e2f_targets,200,177,0.885,True
+hallmark_emt,200,190,0.95,True
+hallmark_ifng_response,200,189,0.945,True
+hallmark_inflammatory_response,200,191,0.955,True
+hallmark_myc_targets_v1,200,176,0.88,True
+hallmark_oxphos,200,172,0.86,True
+hallmark_tnfa_signaling_via_nfkb,200,183,0.915,True

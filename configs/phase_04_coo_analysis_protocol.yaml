@@ -1,0 +1,319 @@
+protocol_id: PHASE-4-COO
+protocol_version: "1.0"
+name: phase_04_coo_analysis_protocol
+written: 2026-09-03
+status: draft_unsigned
+governs_experiments: [E-010, E-011]
+human_readable_twin: reports/phase_04_coo_analysis_protocol.md
+scope_document: reports/phase_04_coo_study_scope.md
+seed: 20260903
+
+label_blindness:
+  label_counts_computed: true
+  feature_label_relationship_examined: false
+  blindness_ends_at: split_generation
+  split_generation_reads: [patient_id, HANS]
+
+precondition:
+  phase_03c_preprint_posted_before_e010: true
+  must_not_delay_survival_writeup: true
+
+inputs:
+  image_features: kaggle/phase_03_morphology_survival/output_e007_full_extraction/patient_features.csv
+  he_patches: "DLBCL-Morph/Patches/HE/<patient>/<patch>.png"
+  he_patch_count: 30007
+  clinical: data/raw/dlbcl_morph/clinical_data_cleaned.csv
+  released_geometry: data/raw/dlbcl_morph/cell_shapes.csv
+
+label:
+  name: cell_of_origin
+  column: HANS
+  classes: [GCB, non_GCB]
+  encoding:
+    gcb_value: 1
+    non_gcb_value: 0
+    positive_class: GCB
+    positive_class_value: 1
+  encoding_verified: 2026-09-03
+  encoding_verifier: src/analysis/verify_hans_encoding.py
+  encoding_concordance: "172/174 (98.9%)"
+  component_scales:
+    "CD10 IHC": {scale: binary, positive_if: "> 0"}
+    "BCL6 IHC": {scale: percent, positive_if: ">= 30"}
+    "MUM1 IHC": {scale: binary, positive_if: "> 0"}
+  data_dictionary_is_wrong: true
+  data_dictionary_error: describes_CD10_and_MUM1_as_percent_but_they_are_binary
+  prohibited_reading:
+    rule: apply_30pct_threshold_to_all_three_columns
+    concordance_if_used: 0.747
+  bcl6_threshold_sweep_peak: 30
+
+label_noise:
+  internal:
+    discordant_patients: ["26804", "26836"]
+    rate: 0.011
+    action: not_corrected
+    note: only_26804_is_in_the_image_cohort
+  label_definition:
+    hans_vs_gep_concordance: "0.80-0.85"
+    consequence: auroc_against_hans_is_not_auroc_against_true_coo
+  report_both_regardless_of_result: true
+
+cohorts:
+  primary:
+    id: A_COO
+    n: 163
+    gcb: 70
+    non_gcb: 93
+    minority: 70
+    definition: all_labelled_image_eligible
+  sensitivity:
+    - {id: B_COO, n: 162, excludes: ["26807"], reason: qc_fail_panel}
+    - {id: C_COO, n: 161, excludes: ["26807", "13957"], reason: both_qc_outliers}
+    - {id: D_COO, n: 162, excludes: ["26804"], reason: hans_discordant}
+  note: all_excluded_patients_are_non_gcb_so_minority_stays_70
+  label_coverage: 0.959
+  recomputation_extends_coverage: false
+
+representations:
+  handcrafted:
+    source: phase_3b_partition_reused_unchanged
+    F0_excluded: true
+    F1a_shape: 28
+    F1b_stain: 12
+    F2_packing: 16
+  foundation_embeddings:
+    primary_encoder:
+      name: H-optimus-0
+      hf_id: bioptimus/H-optimus-0
+      license: apache_2_0
+      gated: false
+    secondary_encoder:
+      name: Phikon-v2
+      hf_id: owkin/phikon-v2
+      gated: false
+    aggregator: ABMIL
+    prohibited_aggregators: [TransMIL, HIPT]
+    prohibited_reason: assume_wsi_spatial_hierarchies_absent_in_tma
+    extraction_outside_cv_loop: true
+    not_leakage_because: encoder_frozen_pretrained_and_never_sees_labels
+
+model_ladder:
+  - id: C0
+    role: negative_control
+    features: [Age, "ECOG PS", LDH, EN, Stage]
+    expectation: auroc_near_0.5
+    failure_threshold: 0.65
+    failure_action: investigate_design_before_interpreting_anything
+  - id: C1
+    features: [F1, F2]
+    k: 56
+    gpu_required: false
+  - id: C2
+    features: released_geometry_mean_and_std
+    k: 44
+  - id: C3
+    role: primary_image_model
+    encoder: H-optimus-0
+    aggregator: ABMIL
+  - id: C3b
+    role: secondary_encoder
+    encoder: Phikon-v2
+    aggregator: ABMIL
+  - id: C4
+    role: fusion
+    features: [C1, C3]
+
+execution_order:
+  first: [C0, C1, C2]
+  then: [C3, C3b, C4]
+  seeing_early_results_licenses_changes_to_C3: false
+
+estimands:
+  primary:
+    id: E1
+    definition: out_of_fold_auroc_of_C3_on_A_COO
+    null_value: 0.5
+    signal_declared_if: bootstrap_lower_bound_exceeds_0.5
+  key_secondary:
+    id: E2
+    definition: auroc_of_locked_C3_on_TCGA_DLBC
+    is_the_studys_contribution: true
+
+external_validation:
+  experiment: E-011
+  cohort: TCGA-DLBC
+  source: gdc_data_portal
+  approx_patients: 48
+  image_type: whole_slide
+  label_source: derived_from_rnaseq_gene_expression_classifier
+  label_method_fixed_before_scoring: true
+  label_method_recorded_as: dated_amendment_in_section_12
+  label_definition_mismatch:
+    train_on: hans_ihc
+    test_against: gene_expression_coo
+    must_be_stated_in_every_report: true
+  feasibility_gate:
+    min_patients_with_slide_and_label: 40
+    max_class_imbalance: "80/20"
+    derivation_documented_before_scoring: true
+    if_gate_fails: report_as_finding_and_mark_E2_not_evaluable
+  domain_shift_handling:
+    tile_size: match_dlbcl_morph_patch_pixel_size
+    microns_per_pixel: match_where_metadata_permits_else_record_mismatch
+    tissue_rule: frozen_e006_tissue_fraction_ge_0.50
+    patches_per_patient: approximate_dlbcl_morph_median_177
+    sampling_seed_fixed: true
+    stain_normalisation_primary: none
+    stain_normalisation_sensitivity: S_ext
+  single_use_rule:
+    scored_once: true
+    revision_after_seeing_external_numbers: voids_E2
+    voided_E2_must_be_reported_as: exploratory
+  early_stopping_rule:
+    condition: both_C1_and_C3_internal_auroc_upper_bound_below_0.65
+    action: E-011_optional_report_internal_null_instead
+
+validation:
+  design: repeated_nested_cv
+  outer_folds: 5
+  outer_repeats: 10
+  outer_fits: 50
+  inner_folds: 5
+  stratify_on: HANS
+  unit: patient
+  split_file: data/manifests/coo_split_ids.csv
+  reuse_phase_3b_splits: false
+  reuse_prohibited_because: different_stratification_variable_and_cohort_size
+  generator_aborts_if_protocol_hash_changed: true
+
+power:
+  cohort_A:
+    n: 163
+    minority: 70
+    minority_per_held_out_fold: 14
+    approx_auroc_ci_halfwidth_at_0.80: 0.07
+    adequate_for: [separating_signal_from_chance, detecting_gross_external_failure]
+    not_adequate_for: [precise_ceiling_estimate, resolving_encoder_differences_below_0.10]
+  external:
+    n: 48
+    approx_auroc_ci_halfwidth: 0.14
+    adequate_for: [detecting_gross_failure_only]
+
+fold_internal_pipeline:
+  order: [impute, prune_redundancy, scale, fit_learner]
+  fitted_on: training_fold_only
+  imputation: {continuous: median, categorical: mode, affects: [C0]}
+  redundancy_pruning:
+    metric: spearman
+    threshold: 0.90
+    applies_to: [C0, C1, C2, C4]
+    applies_to_raw_embeddings: false
+    tie_break: frozen_family_order_then_feature_schema_order
+  scaling: StandardScaler
+  class_imbalance:
+    ratio: "57/43"
+    primary_handling: none
+    resampling_or_weighting_in_primary: false
+    balanced_weight_variant: S4_COO
+
+learners:
+  tabular:
+    applies_to: [C0, C1, C2, C4]
+    name: penalised_logistic_regression
+    grid:
+      l1_ratio: [0.1, 0.5, 0.9, 1.0]
+      C: log_grid_20_points
+  mil:
+    applies_to: [C3, C3b]
+    name: ABMIL
+    loss: binary_cross_entropy
+    grid:
+      attention_hidden_dim: [128, 256]
+      dropout: [0.25, 0.5]
+      learning_rate: [0.0001, 0.001]
+      weight_decay: [0.0001]
+      max_epochs: 50
+      early_stopping_patience: 10
+      early_stopping_metric: inner_fold_auroc
+    grid_may_be_expanded_post_hoc: false
+  inner_selection_criterion: mean_auroc
+
+metrics:
+  discrimination: [auroc, auprc, balanced_accuracy_at_0.5]
+  primary_metric: auroc
+  triage_operating_points:
+    points:
+      - sensitivity_at_90pct_specificity
+      - specificity_at_90pct_sensitivity
+    thresholds_derived: training_folds_only
+    full_cohort_threshold_search: forbidden
+  calibration:
+    slope: true
+    intercept: true
+    curves: true
+    rejection_rule:
+      slope_acceptable_range: [0.7, 1.3]
+      higher_auroc_does_not_override_poor_calibration: true
+  uncertainty:
+    method: patient_level_bootstrap
+    resamples: 1000
+    interval: percentile_95
+
+multiplicity:
+  primary: {members: [E1], adjustment: none}
+  key_secondary: {members: [E2], adjustment: none}
+  secondary_ladder:
+    members: [C1, C2, C3b, C4]
+    reference: 0.5
+    adjustment: holm
+  negative_control: {members: [C0], is_hypothesis_test: false}
+  sensitivities: {adjustment: none, labelled: descriptive}
+  publish_every_model_including_failures: true
+
+sensitivity_analyses:
+  - {id: S1_COO, analysis: cohort_B_n162}
+  - {id: S2_COO, analysis: cohort_C_n161}
+  - {id: S3_COO, analysis: cohort_D_n162_drop_hans_discordant}
+  - {id: S4_COO, analysis: class_weight_balanced}
+  - {id: S5_COO, analysis: C3_on_stain_normalised_input}
+  - {id: S6_COO, analysis: C1_spread_only_vs_central_only}
+  - {id: S_ext, analysis: external_with_stain_normalisation}
+
+reporting:
+  deliverables:
+    - reports/phase_04_coo_results.md
+    - reports/phase_04_coo_results_tables/
+    - calibration_curves
+    - roc_curves
+    - out_of_fold_prediction_dumps
+    - per_fold_hyperparameters
+  record_per_fit: [seed, split_hash, environment_lockfile, protocol_hash]
+  required_language:
+    - report_against_hans_ihc_labels_not_bare_cell_of_origin
+    - tcga_dlbc_is_domain_generalisation_not_clinical_validation
+    - motivated_use_is_triage_where_ihc_unavailable
+    - state_both_label_noise_ceilings_wherever_accuracy_appears
+  forbidden_claims:
+    - h_and_e_replaces_ihc
+    - external_clinical_validation
+
+integrity_rules:
+  representations_frozen_after_label_access: true
+  ladder_frozen_after_label_access: true
+  external_cohort_scored_once: true
+  primary_encoder_is_h_optimus_0: true
+  swapping_to_C3b_because_it_scored_higher: forbidden
+  full_cohort_threshold_optimisation: forbidden
+  abml_grid_expansion_post_hoc: forbidden
+  re_running_segmentation_against_labels: forbidden
+
+amendments: []
+
+sign_off:
+  signed: false
+  researcher: null
+  supervisor: null
+  date: null
+  protocol_sha256: null
+  split_generation_blocked_until_signed: true

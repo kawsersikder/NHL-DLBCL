@@ -1,0 +1,238 @@
+# Route 1 — biological representation and coverage rules
+# Phase 3 deliverable. Every rule here is outcome-independent and was fixed
+# before any expression value was joined to any outcome.
+#
+# Coverage NUMBERS measured by route1/src/phase3_platform_coverage.py and
+# recorded in route1/manifests/program_gene_sets.csv and
+# route1/reports/platform_coverage.md. This file holds the RULES.
+
+platforms:
+  development:
+    accession: GPL14951
+    title: Illumina HumanHT-12 WG-DASL V4.0 R2 expression beadchip
+    technology: oligonucleotide beads
+    annotation_last_update: 2017-12-22
+    probes: 29377
+    symbol_column: Symbol
+  external:
+    accession: GPL570
+    title: Affymetrix Human Genome U133 Plus 2.0 Array
+    symbol_column: Gene Symbol
+    used_by: [GSE10846, GSE87371, GSE31312]
+
+# ---------------------------------------------------------------------------
+# Expression state — RESOLVED EMPIRICALLY, and it contradicts the metadata
+# ---------------------------------------------------------------------------
+development_expression:
+  file: route1/data/raw/GSE181063_RawData.txt.gz
+  sha256: a76e6993993b6482748b71a974976c4f92392b034a85583032362e0e5173137a
+  bytes: 134391972
+  layout: "2621 columns = ID + 1310 x (DASLV4_<n>_Exp, DASLV4_<n>_pVal)"
+  join_key: Sample_title            # DASLV4_<n>; an ARRAY INDEX, not a patient id
+  probes_in_file: 29372             # 5 fewer than the platform's 29377 — reconcile in Phase 4
+  # GEO's !Sample_data_processing says "normalised using Lumi for R". That
+  # describes the per-sample GSM VALUE column, NOT this supplementary file.
+  # Tested directly on 6 sample columns:
+  is_log_transformed: false         # observed range 45.8 - 73351.6
+  is_quantile_normalised: false     # max abs diff between sorted columns 28685.4
+  between_sample_scale_variation: "per-sample medians span 338.2 - 8149.0 (~24x)"
+  detection_pvalues_available: true
+  # probe_detection PROVENANCE RESOLVED (closes a Phase 1 open item).
+  # It is the fraction of probes with detection p-value < 0.01. Verified on 5
+  # arrays to 6 decimal places: DASLV4_1 0.670196, _2 0.779654, _4 0.570271,
+  # _6 0.745983, _500 0.689773 — each reproduced exactly by (pVal < 0.01).mean().
+  # p<0.05 and p<0.10 do NOT reproduce it. Since qc_fail is monotone in
+  # probe_detection, the QC filter's technical basis is now established
+  # empirically despite Painter being paywalled.
+  probe_detection_definition: "fraction of probes with detection p-value < 0.01"
+  probe_reconciliation: >-
+    Expression matrix is a STRICT SUBSET of the platform: 29,372 of 29,377
+    probes. Absent are ILMN_1685079, ILMN_1782748, ILMN_2294431, ILMN_2385239,
+    ILMN_3261111. Zero expression probes are unknown to the platform, so there
+    are no orphan probes.
+  consequence: >-
+    The data ARE raw. They must be log-transformed exactly ONCE, and they
+    require normalisation. Assuming the metadata and skipping both would be a
+    serious error in the opposite direction to the usual double-log mistake.
+
+transform:
+  order: [detection_filter, log2, within_sample_rank, program_score]
+  log2:
+    applied: true
+    offset: 1                        # log2(x + 1); x is strictly positive here
+    applied_once: true               # asserted in code; raw state verified above
+  normalisation:
+    method: within_sample_rank
+    rationale: >-
+      Within-sample ranks are invariant to any monotone per-sample scaling, so
+      the 24x median spread and the Illumina/Affymetrix intensity-scale
+      difference are handled without fitting any cross-sample parameter. This
+      also removes the need to batch-correct, which the plan forbids doing
+      jointly across training and final test.
+    cross_sample_parameters_fitted: false
+    joint_batch_correction_across_cohorts: false   # PROHIBITED
+
+# ---------------------------------------------------------------------------
+# Probe -> gene rule. Deterministic, outcome-independent, identical per platform
+# ---------------------------------------------------------------------------
+probe_to_gene:
+  rule: >-
+    A probe maps to a gene iff the platform's own annotation names exactly one
+    gene symbol for it. Probes naming multiple genes are excluded as
+    multi-mapping. A gene is measured iff at least one non-multi-mapping probe
+    maps to it.
+  multi_mapping: excluded
+  multi_probe_gene_collapse: median_of_probe_ranks   # Phase 4 may revise BEFORE fitting
+  symbol_matching: verbatim_uppercase_stripped
+  alias_resolution: false
+  alias_caveat: >-
+    No synonym/alias table is applied, because an alias table is itself a
+    versioned dependency requiring its own provenance. Cross-platform overlap
+    is therefore a LOWER BOUND, reported as such rather than inflated.
+  best_probe_by_outcome: PROHIBITED   # never select a gene's probe by prognosis
+
+# ---------------------------------------------------------------------------
+# Ranking reference universe (plan task 7)
+# ---------------------------------------------------------------------------
+ranking_universe:
+  definition: intersection_of_development_and_external_measured_genes
+  rationale: >-
+    Within-sample ranks change when the measured gene universe changes, so the
+    universe must be FIXED across cohorts rather than taken per-platform.
+    Ranking over each platform's own gene set would make development and
+    external scores non-comparable by construction — the rank of a gene depends
+    on how many other genes were measured.
+  fixed_before_outcome_access: true
+  universe_file: route1/manifests/gene_mapping.csv   # column `shared`
+  sensitivity: >-
+    Secondary analysis ranking over the development universe only, to quantify
+    how much the universe choice itself moves results.
+
+# ---------------------------------------------------------------------------
+# Biological programs
+# ---------------------------------------------------------------------------
+programs:
+  source: MSigDB Hallmark (collection H)
+  source_pmid: 26771021              # Liberzon et al. 2015
+  retrieved: 2026-09-10
+  retrieval_endpoint: https://www.gsea-msigdb.org/gsea/msigdb/human/geneset/<NAME>.json
+  members_transcribed_by_hand: false  # fetched as JSON and hashed
+  rejected_alternatives:
+    - name: Rosenwald 2002 / Lenz 2008 Stromal-1, Stromal-2, germinal-centre
+      reason: >-
+        Derived on LLMPP data — the GSE10846 lineage. Using them would make
+        GSE10846 non-independent for the PROGRAMS as well as for COO,
+        compounding its Phase 2 demotion to development-validation.
+    - name: GOBP_GERMINAL_CENTER_B_CELL_DIFFERENTIATION
+      reason: >-
+        Only 9 genes — not scoreable under coverage loss. Germinal-centre
+        biology is deliberately left to B1's COO category; duplicating it in B2
+        would blur the increment B2 exists to measure.
+  definitions:
+    proliferation_e2f:               {set: HALLMARK_E2F_TARGETS, sys: M5925, n: 200, direction: higher_is_more_proliferative}
+    proliferation_myc:               {set: HALLMARK_MYC_TARGETS_V1, sys: M5926, n: 200, direction: higher_is_more_proliferative}
+    nfkb_signalling:                 {set: HALLMARK_TNFA_SIGNALING_VIA_NFKB, sys: M5890, n: 200, direction: higher_is_more_active}
+    interferon_antigen_presentation: {set: HALLMARK_INTERFERON_GAMMA_RESPONSE, sys: M5913, n: 200, direction: higher_is_more_active}
+    stromal_ecm:                     {set: HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION, sys: M5930, n: 200, direction: higher_is_more_stromal}
+    angiogenesis:                    {set: HALLMARK_ANGIOGENESIS, sys: M5944, n: 36, direction: higher_is_more_angiogenic}
+    inflammatory_macrophage:         {set: HALLMARK_INFLAMMATORY_RESPONSE, sys: M5932, n: 200, direction: higher_is_more_inflammatory}
+    oxidative_phosphorylation:       {set: HALLMARK_OXIDATIVE_PHOSPHORYLATION, sys: M5936, n: 200, direction: higher_is_more_oxphos}
+
+scoring:
+  formula: mean_within_sample_rank_of_available_program_genes
+  detail: >-
+    For each sample, rank all genes in the fixed ranking universe by log2
+    expression, scale ranks to [0,1], then take the MEAN scaled rank over the
+    program's genes that are available in that cohort. Mean-of-available is
+    used so that a program score remains on a comparable scale when coverage
+    differs, rather than shrinking mechanically with the number of missing
+    genes.
+  standardisation: >-
+    Any centring/scaling of program scores is fitted on TRAINING FOLDS ONLY.
+  measured_cell_counts: false
+  interpretation_caveat: >-
+    These are abundance-related expression scores, NOT validated cell counts.
+    "macrophage-associated expression" is not a macrophage count.
+
+coverage_rules:
+  # "Present on the array" is NOT the same as "measured". Measured on 19 arrays
+  # spread across the run order: 1,600 of 29,372 probes (5.4%) were never
+  # detected at p<0.01 in any of them, and only 66.4% were detected in >50% of
+  # arrays. A program gene that is never detected contributes noise, not signal.
+  detection_filter:
+    apply: true
+    rule: "drop probes detected (p<0.01) in <10% of DEVELOPMENT arrays"
+    measured_on: development_only
+    fitted_within_training_folds: true
+    rationale: >-
+      This is feature selection. Although detection p-values are
+      outcome-independent, the filter must not be computed using any external
+      cohort, and within cross-validation it is refitted per training fold.
+    external_cohorts_used_to_fit_filter: false
+  minimum_genes_absolute: 10
+  minimum_fraction_of_set: 0.50
+  # A program failing EITHER threshold in a cohort is not scored there.
+  on_failure: emit_missing_indicator_and_exclude_program_in_that_cohort
+  missing_gene_handling: excluded_from_the_mean
+  missing_gene_as_zero: PROHIBITED
+  missing_gene_as_zero_note: >-
+    A gene that was never measured is not a gene with zero expression.
+    Substituting zero would push program scores down in exactly the cohorts
+    with the worst coverage — i.e. it would manufacture a platform effect.
+  coverage_indicator_available_to_models: [B3, B4]
+
+# ---------------------------------------------------------------------------
+# Coverage perturbation for B4 (plan task 8)
+# ---------------------------------------------------------------------------
+masking:
+  # ==========================================================================
+  # WITHDRAWN 2026-09-11 by supervisor decision 2.1(b). RETAINED FOR THE RECORD
+  # ONLY — no arm of the ladder uses this, and B4 has been removed.
+  #
+  # Reason it is void, and it is stronger than the 1.9% figure I first reported:
+  #   ranking universe U = development INTERSECT external
+  #   primary mask     M = development MINUS external
+  #   => U and M are disjoint BY CONSTRUCTION.
+  # Verified: |U| = 15647, |M| = 5171, |U n M| = 0. Masking M removes ZERO of
+  # the 15,647 genes any model actually sees. It is a no-op, not a weak
+  # perturbation. My 1.9% figure used the wrong denominator (on_dev rather than
+  # the model input set U).
+  #
+  # Random dropout inside U is NOT a repair — it is a different perturbation
+  # with no claim to represent the real platform move. A targeted 50-200 gene
+  # panel is a SEPARATE study requiring a real panel, its own scoring
+  # reference, realistic measurement assumptions and a dated protocol; a rank
+  # score defined over thousands of genes cannot be measured by an assay
+  # containing only panel genes.
+  #
+  # B4 will NOT be run to produce a null result.
+  # ==========================================================================
+  status: WITHDRAWN
+  withdrawn_date: 2026-09-11
+  withdrawn_reason: mask_is_a_no_op_under_the_declared_ranking_universe
+  assertion_required: route1/src/phase3R_representation_checks.py  # must prove |U n M| == 0
+  applied_to: []
+  _historical_primary:
+    name: realistic_platform_masking
+    definition: >-
+      Mask exactly the genes measured on GPL14951 but NOT on GPL570 — the
+      actual, non-random gene loss incurred by moving from the development
+      platform to every external cohort. This is derived from the two platform
+      designs, not invented.
+    gene_list_source: route1/manifests/gene_mapping.csv (on_GPL14951 and not on_GPL570)
+    random: false
+    was_applied_to: [B4]
+    was_applied_before: program_score_recomputation
+  _historical_secondary:
+    name: random_mask_sensitivity
+    definition: >-
+      Random gene dropout at rates matched to the realistic mask's per-program
+      loss. ALSO WITHDRAWN: random dropout inside U is a different
+      perturbation and cannot stand in for the actual platform move.
+
+prohibitions:
+  - outcome_based_gene_or_probe_selection
+  - joint_batch_correction_of_development_and_final_test
+  - double_log_transformation
+  - substituting_zero_for_unmeasured_genes
+  - selecting_the_ranking_universe_after_seeing_results

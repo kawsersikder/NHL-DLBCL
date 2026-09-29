@@ -1,0 +1,11 @@
+patient_id,patch_id,computational_rating,observations,catastrophic_failure,expert_review_status
+13964,303,usable_with_caution,"Partial/low-contrast tissue; most nuclei recovered; some elongated or merged contours",0,pending
+13965,19,usable,"Dense field with strong nuclear coverage; minor border truncation and watershed splits",0,pending
+17648,163,usable_with_caution,"Variable nuclear size; several merged or irregular contours but no domain failure",0,pending
+17649,82,usable,"Displayed field is well covered; separate known failure patch 5053 remains excluded",0,pending
+18835,88,usable_with_caution,"Lower contrast with pale and elongated objects; mild misses/false positives",0,pending
+19681,127,usable,"Representative dense field with good coverage and only mild merge/split errors",0,pending
+26793,974,usable_with_caution,"Partial tissue edge; nuclei are recovered but edge/stromal structures can be segmented",0,pending
+26806,138,usable,"Good coverage across heterogeneous nuclei; occasional elongated or fragmented contour",0,pending
+26817,4,usable,"Dense high-quality field; strong coverage with mild internal watershed splitting",0,pending
+26838,79,usable_with_caution,"Good overall coverage; elongated stromal structures and partial nuclei remain possible false positives",0,pending

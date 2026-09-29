@@ -1,0 +1,58 @@
+{
+  "status": "pilot_complete_pending_human_review",
+  "mode": "pilot",
+  "seed": 20260828,
+  "device": "cuda",
+  "checkpoint": {
+    "path": "/kaggle/input/datasets/kawsersikder/dlbcl-e001-unet/best_model.pt",
+    "md5": "dea287c50949db8c6b7f6b7bfad87271",
+    "e001_recorded_validation_metrics": {
+      "loss": 0.32397439517080784,
+      "dice": 0.8779164142906666,
+      "iou": 0.7887123823165894
+    }
+  },
+  "postprocessing": {
+    "probability_threshold": 0.5,
+    "minimum_nucleus_area_px": 20,
+    "watershed_min_distance_px": 5,
+    "centroid_match_radius_px": 12.0
+  },
+  "lynsec": {
+    "manifest": "/kaggle/input/datasets/kawsersikder/dlbcl-e001-unet/tile_manifest.csv",
+    "split_limitation": "E-001 validation is tile-level; LyNSeC has no public patient IDs.",
+    "aggregate": {
+      "mean_semantic_dice": 0.8879343496709318,
+      "median_semantic_dice": 0.8946599060506792,
+      "mean_detection_precision": 0.8467550468002895,
+      "median_detection_precision": 0.8673402255639098,
+      "mean_detection_recall": 0.9473040365620274,
+      "median_detection_recall": 0.9534740092640247,
+      "mean_detection_f1": 0.892278643263557,
+      "median_detection_f1": 0.9066714706058969,
+      "mean_absolute_count_error_fraction": 0.12836697419758417,
+      "median_absolute_count_error_fraction": 0.09690486082260075,
+      "mean_pq": 0.7182690842421903,
+      "median_pq": 0.7337701608008342,
+      "mean_dq": 0.8589513783179648,
+      "median_dq": 0.877989021680067,
+      "mean_sq": 0.8357312733009503,
+      "median_sq": 0.835044297341573,
+      "tile_count": 50
+    },
+    "automatic_engineering_gate": "pass",
+    "gate_definition": {
+      "mean_semantic_dice_min": 0.8,
+      "mean_detection_f1_min": 0.7,
+      "median_absolute_count_error_fraction_max": 0.2
+    }
+  },
+  "dlbcl_morph": {
+    "patch_source": "/kaggle/input/datasets/kawsersikder/dlbcl-morph-patches/HE",
+    "patch_source_mode": "extracted_directory",
+    "patch_archive": null,
+    "overlay_count": 20,
+    "gate": "pending human/pathologist review; require >=80% usable patches"
+  },
+  "scientific_scope": "Binary all-nuclei segmentation plus instance postprocessing. It does not provide validated tumour/non-tumour phenotypes; downstream features must remain type-free unless a separate classifier is validated."
+}

@@ -1,0 +1,366 @@
+protocol_id: PHASE-3B
+protocol_version: "1.0"
+name: phase_03b_statistical_analysis_protocol
+written: 2026-08-30
+status: draft_unsigned
+governs_experiments: [E-008, E-009]
+human_readable_twin: reports/phase_03b_statistical_analysis_protocol.md
+seed: 20260830
+
+outcome_blindness:
+  document_written_without_outcome_access: true
+  blindness_ends_at: split_generation
+  split_generation_reads: [patient_id, "Follow-up Status"]
+  outcome_join_authorised_only_after: signed_protocol_and_frozen_entropy
+
+inputs:
+  image_features: kaggle/phase_03_morphology_survival/output_e007_full_extraction/patient_features.csv
+  patch_qc: kaggle/phase_03_morphology_survival/output_e007_full_extraction/patch_qc.csv
+  clinical: data/raw/dlbcl_morph/clinical_data_cleaned.csv
+  clinical_md5: 9be9d237c49506db16d3c3b53825f827
+  released_geometry: data/raw/dlbcl_morph/cell_shapes.csv
+  entropy_features: reports/phase_03b_entropy_features.csv
+
+join:
+  key: patient_id
+  cast: str
+  verified_outcome_blind: 2026-08-30
+  expected_features_x_clinical: 170
+  expected_features_x_geometry: 170
+  expected_features_minus_clinical: 0
+  abort_if_mismatch: true
+
+endpoint:
+  name: overall_survival
+  time_column: OS
+  event_column: "Follow-up Status"
+  time_origin: end_of_treatment
+  time_units: years
+  pfs_excluded_reason: no_progression_status_indicator
+
+cohorts:
+  primary:
+    id: A
+    n: 170
+    events: 58
+    definition: all_image_eligible_patients
+  sensitivity:
+    - id: B
+      n: 169
+      excludes: ["26807"]
+      reason: failed_representative_field
+    - id: C
+      n: 168
+      excludes: ["26807", "13957"]
+      reason: failed_field_plus_high_low_tissue_burden
+  clinical_209_cohort:
+    role: descriptive_context_only
+    usable_as_paired_comparator: false
+
+feature_families:
+  total_feature_columns: 65
+
+  F0_qc_exposure:
+    role: excluded_from_all_primary_models
+    retained_for: [qc_adjustment, sensitivity_S3]
+    rationale: sampling_exposure_and_slide_background_not_biology
+    count: 9
+    columns:
+      - patch_count_total
+      - patch_count_primary
+      - patch_count_low_tissue
+      - cell_count_total
+      - cell_count_primary
+      - patch_tissue_fraction_median
+      - patch_tissue_fraction_iqr
+      - patch_tissue_fraction_p10
+      - patch_tissue_fraction_p90
+
+  F1_morphology:
+    count: 40
+    maps_to_model: M4a
+    F1a_shape:
+      count: 28
+      bases: [cell_area_px, cell_perimeter_px, cell_eccentricity, cell_solidity,
+              cell_circularity, cell_major_axis_px, cell_minor_axis_px]
+      suffixes: [median, iqr, p10, p90]
+    F1b_stain:
+      count: 12
+      bases: [cell_rgb_mean_r, cell_rgb_mean_g, cell_rgb_mean_b]
+      suffixes: [median, iqr, p10, p90]
+      separable_reason: confounded_with_staining_batch_and_scanner
+
+  F2_packing:
+    count: 16
+    maps_to_model: M4b
+    bases: [patch_primary_cell_count, patch_nuclear_foreground_fraction,
+            patch_nearest_neighbour_median_px, patch_delaunay_edge_median_px]
+    suffixes: [median, iqr, p10, p90]
+    note: patch_tissue_fraction_is_F0_not_F2
+
+  cross_cutting_views:
+    central_tendency:
+      suffixes: [median]
+      count: 14
+    spread_heterogeneity:
+      suffixes: [iqr, p10, p90]
+      count: 42
+      tests_hypotheses: [1, 3]
+    patch_to_patch_heterogeneity:
+      scope: F2_only
+      suffixes: [iqr, p10, p90]
+      count: 12
+      tests_hypotheses: [3]
+
+model_ladder:
+  - id: M0a
+    features: ["IPI Score"]
+    k: 1
+  - id: M0b
+    features: ["RIPI Risk Group"]
+    k: 1
+  - id: M1
+    role: primary_clinical_baseline
+    features: [Age, "ECOG PS", LDH, EN, Stage]
+    k: 5
+    excludes_ihc_fish: true
+  - id: M2
+    role: reproduced_literature_baseline
+    features: released_geometry_mean_and_std
+    k: 44
+    fold_safe_unlike_E002: true
+    positional_columns_retained_for_fidelity:
+      [rectCenter_x, rectCenter_y, ellip_centroid_x, ellip_centroid_y]
+  - id: M3
+    role: entropy_comparator
+    features: entropy_patient_aggregates
+    k: 5
+    primary_covariate: entropy_mean
+    cutpoint_search: forbidden
+  - id: M4a
+    features: F1
+    k: 40
+  - id: M4b
+    features: F2
+    k: 16
+  - id: M4c
+    role: primary_image_model
+    features: [F1, F2]
+    k: 56
+  - id: M5
+    role: primary_incremental_model
+    features: [M1, M4c]
+    k: 61
+  - id: M6
+    role: optional_phase_4_benchmark
+    features: frozen_encoder_mil_score
+    k: null
+
+primary_estimand:
+  comparison: M5_vs_M1
+  cohort: A
+  quantity: paired_out_of_fold_discrimination_difference
+  minimum_improvement_assumed: none
+  null_result_is_reportable: true
+
+entropy_experiment:
+  id: E-008
+  must_complete_before: split_generation
+  patch_source: "DLBCL-Morph/Patches/HE/<patient>/<patch>.png"
+  expected_patches: 30007
+  grayscale: itu_r_601_2_luma
+  levels: 256
+  statistic: shannon_entropy_bits
+  tissue_masking: false
+  tissue_masking_reason: reproduce_global_entropy_comparator_faithfully
+  patch_eligibility: frozen_e006_tissue_rule
+  minimum_tissue_fraction: 0.50
+  patient_aggregation: [mean, median, iqr, p10, p90]
+  output: reports/phase_03b_entropy_features.csv
+  gate:
+    rows: 170
+    finite_fraction_min: 1.0
+    patch_counts_reconcile_with_patch_qc: true
+
+validation:
+  design: repeated_nested_patient_level_cv
+  outer_folds: 5
+  outer_repeats: 10
+  outer_fits_per_model: 50
+  inner_folds: 5
+  stratify_on: event_indicator
+  stratification_pre_specified: 2026-08-30
+  unit: patient
+  locked_test_set: false
+  locked_test_set_reason: approx_12_events_too_unstable
+  estimate_type: internal
+  never_describe_as: [external_validation, clinical_validation]
+  split_file: data/manifests/split_ids.csv
+  split_file_columns: [patient_id, repeat, outer_fold]
+  split_generator: src/analysis/build_split_ids.py
+  all_models_consume_same_split_file: true
+
+power:
+  events: 58
+  approx_training_events_per_fold: 46
+  max_features_M5: 61
+  events_per_variable: 0.8
+  below_conventional_epv_10: true
+  consequences:
+    - penalised_cox_primary_not_unpenalised
+    - fold_internal_redundancy_pruning_mandatory
+    - calibration_is_rejection_criterion
+    - powered_for_large_increment_only
+  reported_regardless_of_result: true
+
+fold_internal_pipeline:
+  fitted_on: training_fold_only
+  order: [impute, prune_redundancy, scale, fit_learner]
+  imputation:
+    continuous: median
+    categorical: mode
+    affects: [M1]
+    e007_features_require_imputation: false
+  redundancy_pruning:
+    metric: spearman
+    threshold: 0.90
+    known_correlated_pairs: 39
+    applies_to: every_model_in_the_ladder
+    tie_break: first_in_frozen_family_order
+    family_order: [F0, F1a, F1b, F2]
+    then: feature_schema_json_column_order
+    entropy_family_order:
+      - entropy_mean
+      - entropy_median
+      - entropy_iqr
+      - entropy_p10
+      - entropy_p90
+    entropy_family_order_source: protocol_section_4_declaration_order
+    entropy_clarification_date: 2026-09-01
+    entropy_clarification_before_outcome_access: true
+    deterministic: true
+  scaling:
+    method: StandardScaler
+    quantile_transformer_rejected_reason: e002_legacy_quirk_not_carried_forward
+
+learners:
+  primary:
+    name: CoxnetSurvivalAnalysis
+    package: scikit-survival
+    grid:
+      l1_ratio: [0.1, 0.5, 0.9, 1.0]
+      alpha: log_path_20_points_auto_per_fold
+  secondary:
+    name: RandomSurvivalForest
+    package: scikit-survival
+    role: fixed_nonlinear_ablation
+    grid:
+      n_estimators: [500]
+      min_samples_leaf: [5, 10, 20]
+      max_features: [sqrt, 0.33]
+  inner_selection_criterion: mean_harrell_c_index
+  dependency_note: scikit_survival_must_be_pinned_in_kaggle_notebook
+
+metrics:
+  discrimination:
+    - harrell_c_index
+    - uno_c_index
+  uno_truncation_years: 5.0
+  time_dependent_auc:
+    primary_horizons_years: [2, 3, 5]
+    exploratory_horizons_years: [1]
+    exploratory_reason: too_few_events_for_stability
+  integrated_brier_score:
+    range_years: [0.25, 5.0]
+  calibration:
+    slope: true
+    intercept: true
+    plots: true
+    rejection_rule:
+      slope_acceptable_range: [0.7, 1.3]
+      higher_discrimination_does_not_override_poor_calibration: true
+  uncertainty:
+    method: patient_level_paired_bootstrap
+    resamples: 1000
+    interval: percentile_95
+    pairs_resampled_jointly: true
+  kaplan_meier:
+    groups: tertiles
+    cutpoints_from: training_folds_only
+    full_cohort_threshold_search: forbidden
+
+multiplicity:
+  primary:
+    members: [M5_vs_M1]
+    adjustment: none
+  secondary_ladder:
+    members: [M4a, M4b, M4c, M3, M2, M0a, M0b]
+    reference: M1
+    adjustment: holm
+  cohort_sensitivity:
+    members: [B, C]
+    adjustment: none
+    labelled: descriptive
+  ablations:
+    adjustment: none
+    labelled: descriptive
+  phase_3d_markers:
+    members: [HANS, CD10, BCL6, MUM1, MYC, BCL2, FISH]
+    adjustment: benjamini_hochberg
+    labelled: exploratory
+  publish_every_model_fitted_including_failures: true
+
+sensitivity_analyses:
+  - id: S1
+    analysis: cohort_B_n169
+  - id: S2
+    analysis: cohort_C_n168
+  - id: S3
+    analysis: M5_plus_F0_as_adjustment
+  - id: S4
+    analysis: M4c_without_F1b_stain
+  - id: S5
+    analysis: M2_without_positional_columns
+  - id: S6
+    analysis: rsf_instead_of_penalised_cox
+  - id: S7
+    analysis: spread_only_vs_central_only_views
+
+reporting:
+  deliverables:
+    - reports/phase_03c_model_ladder_results.md
+    - reports/phase_03c_results_tables/
+    - calibration_plots
+    - km_curves
+    - out_of_fold_prediction_dumps
+  record_per_fit: [seed, split_hash, environment_lockfile, config_hash]
+  permitted_language:
+    - nuclear_pleomorphism
+    - cellular_packing
+    - within_patch_spatial_organization
+  forbidden_language:
+    - tumour_immune_mixing
+    - immune_phenotype
+    - spatial_omics_surrogate
+    - external_validation
+    - clinical_validation
+  results_status_until_expert_audit: internal_exploratory
+  expert_audit_sheet: reports/phase_03_e007_expert_priority_subset.csv
+
+integrity_rules:
+  feature_families_frozen_after_outcome_access: true
+  ladder_frozen_after_outcome_access: true
+  segmentation_retuning_against_outcomes: forbidden
+  expert_disagreement_activates: frozen_sensitivity_branch
+  expert_disagreement_never_triggers: re_extraction
+  full_cohort_cutpoint_optimisation: forbidden
+  abort_on_join_mismatch: true
+
+amendments: []
+
+sign_off:
+  signed: false
+  researcher: null
+  date: null
+  protocol_sha256: null
+  outcome_join_blocked_until_signed: true

@@ -1,0 +1,540 @@
+{
+  "status": "pass",
+  "source": "F:\\Research Projects\\NHL-DLBCL\\kaggle\\phase_03_morphology_survival\\output_e007_full_extraction",
+  "checks_passed": 48,
+  "checks_total": 48,
+  "checks": [
+    {
+      "name": "required_core_files",
+      "pass": true,
+      "detail": [
+        "cells.parquet",
+        "environment.json",
+        "exclusion_log.csv",
+        "feature_schema.json",
+        "patch_qc.csv",
+        "patient_features.csv",
+        "resolved_config.yaml",
+        "run_summary.json"
+      ]
+    },
+    {
+      "name": "artifact_file_count",
+      "pass": true,
+      "detail": 178
+    },
+    {
+      "name": "overlay_count",
+      "pass": true,
+      "detail": 170
+    },
+    {
+      "name": "resolved_config_matches_tracked",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "summary_gate_pass",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "selection_is_outcome_blind",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "outcome_join_blocked",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "checkpoint_md5",
+      "pass": true,
+      "detail": "dea287c50949db8c6b7f6b7bfad87271"
+    },
+    {
+      "name": "summary_schema_match",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "manifest_patient_count",
+      "pass": true,
+      "detail": 170
+    },
+    {
+      "name": "parquet_row_count",
+      "pass": true,
+      "detail": 1959950
+    },
+    {
+      "name": "loaded_cell_row_count",
+      "pass": true,
+      "detail": 1959950
+    },
+    {
+      "name": "patient_feature_rows",
+      "pass": true,
+      "detail": 170
+    },
+    {
+      "name": "patch_rows",
+      "pass": true,
+      "detail": 30007
+    },
+    {
+      "name": "exclusion_rows",
+      "pass": true,
+      "detail": 543
+    },
+    {
+      "name": "patient_ids_match_manifest",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "patient_ids_match_summary",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "unique_patient_rows",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "unique_patch_keys",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "unique_cell_keys",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "patient_inventory_hash",
+      "pass": true,
+      "detail": "cdb1b0aed4c70325e7202cb7d3ca80a7ef490c3eb19edb6904ba8ea796b5e50c"
+    },
+    {
+      "name": "patch_inventory_hash",
+      "pass": true,
+      "detail": "10d1e96e4b6789a12745dc274e61d99ee34b6f798097fc1b27e07d1c31548d97"
+    },
+    {
+      "name": "per_patient_patch_counts_match_manifest",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "patient_features_all_finite",
+      "pass": true,
+      "detail": 1.0
+    },
+    {
+      "name": "no_outcome_like_patient_columns",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "all_cells_reference_known_patch",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "patch_predicted_counts_match_cells",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "patch_primary_counts_match_cells",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "patch_border_counts_match_cells",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "low_tissue_rule_exact",
+      "pass": true,
+      "detail": 542
+    },
+    {
+      "name": "eligibility_rule_exact",
+      "pass": true,
+      "detail": 29464
+    },
+    {
+      "name": "low_tissue_count",
+      "pass": true,
+      "detail": 542
+    },
+    {
+      "name": "eligible_patch_count",
+      "pass": true,
+      "detail": 29464
+    },
+    {
+      "name": "low_tissue_exclusion_log_exact",
+      "pass": true,
+      "detail": 542
+    },
+    {
+      "name": "exclusion_actions_unique_per_patch",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "known_failure_logged_once",
+      "pass": true,
+      "detail": 1
+    },
+    {
+      "name": "known_failure_cell_flags",
+      "pass": true,
+      "detail": 58
+    },
+    {
+      "name": "partial_tissue_primary_cells_retained",
+      "pass": true,
+      "detail": 14060
+    },
+    {
+      "name": "patient_count_aggregates_match_source_tables",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "cell_numeric_values_finite",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "cell_feature_ranges",
+      "pass": true,
+      "detail": {
+        "area_positive": true,
+        "axes_nonnegative": true,
+        "major_axis_ge_minor": true,
+        "eccentricity_0_1": true,
+        "solidity_0_1": true,
+        "rgb_0_255": true,
+        "binary_flags": true
+      }
+    },
+    {
+      "name": "all_patients_have_eligible_patch",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "all_overlay_pngs_valid",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "name": "one_overlay_per_patient",
+      "pass": true,
+      "detail": 170
+    },
+    {
+      "name": "e006_cell_rows_exact_in_e007",
+      "pass": true,
+      "detail": {
+        "e006": 113833,
+        "e007_subset": 113833
+      }
+    },
+    {
+      "name": "e006_patch_rows_exact_in_e007",
+      "pass": true,
+      "detail": {
+        "e006": 1894,
+        "e007_subset": 1894
+      }
+    },
+    {
+      "name": "e006_patient_features_exact_in_e007",
+      "pass": true,
+      "detail": true
+    },
+    {
+      "name": "e006_overlays_byte_identical_in_e007",
+      "pass": true,
+      "detail": {
+        "13964": true,
+        "13965": true,
+        "17648": true,
+        "17649": true,
+        "18835": true,
+        "19681": true,
+        "26793": true,
+        "26806": true,
+        "26817": true,
+        "26838": true
+      }
+    }
+  ],
+  "metrics": {
+    "artifact_file_count": 178,
+    "artifact_total_bytes": 288994830,
+    "overlay_count": 170,
+    "parquet_rows": 1959950,
+    "parquet_columns": [
+      "patient_id",
+      "patch_id",
+      "cell_id",
+      "centroid_y_px",
+      "centroid_x_px",
+      "area_px",
+      "perimeter_px",
+      "eccentricity",
+      "solidity",
+      "circularity",
+      "major_axis_px",
+      "minor_axis_px",
+      "rgb_mean_r",
+      "rgb_mean_g",
+      "rgb_mean_b",
+      "border_touching",
+      "patch_excluded_from_primary"
+    ],
+    "patch_missing_values": {
+      "qc_flag": 29464,
+      "nearest_neighbour_median_px": 6,
+      "nearest_neighbour_mean_px": 6,
+      "delaunay_edge_median_px": 11,
+      "delaunay_edge_mean_px": 11
+    },
+    "feature_column_count_excluding_id": 65,
+    "high_correlation_pair_count_abs_spearman_ge_0_95": 39,
+    "high_correlation_pairs_abs_spearman_ge_0_95": [
+      {
+        "feature_a": "cell_area_px_median",
+        "feature_b": "cell_perimeter_px_median",
+        "abs_spearman": 0.9895746752700838
+      },
+      {
+        "feature_a": "cell_area_px_median",
+        "feature_b": "cell_major_axis_px_median",
+        "abs_spearman": 0.9717880172196997
+      },
+      {
+        "feature_a": "cell_area_px_median",
+        "feature_b": "cell_minor_axis_px_median",
+        "abs_spearman": 0.9926764664908342
+      },
+      {
+        "feature_a": "cell_area_px_iqr",
+        "feature_b": "cell_area_px_p90",
+        "abs_spearman": 0.9632832441123841
+      },
+      {
+        "feature_a": "cell_area_px_iqr",
+        "feature_b": "cell_perimeter_px_p90",
+        "abs_spearman": 0.9586594975342926
+      },
+      {
+        "feature_a": "cell_area_px_iqr",
+        "feature_b": "cell_minor_axis_px_iqr",
+        "abs_spearman": 0.974014047999174
+      },
+      {
+        "feature_a": "cell_area_px_iqr",
+        "feature_b": "cell_minor_axis_px_p90",
+        "abs_spearman": 0.9614705365204906
+      },
+      {
+        "feature_a": "cell_area_px_p10",
+        "feature_b": "cell_perimeter_px_p10",
+        "abs_spearman": 0.9947577397794181
+      },
+      {
+        "feature_a": "cell_area_px_p10",
+        "feature_b": "cell_major_axis_px_p10",
+        "abs_spearman": 0.9839878126183234
+      },
+      {
+        "feature_a": "cell_area_px_p10",
+        "feature_b": "cell_minor_axis_px_p10",
+        "abs_spearman": 0.9944594333222186
+      },
+      {
+        "feature_a": "cell_area_px_p90",
+        "feature_b": "cell_perimeter_px_p90",
+        "abs_spearman": 0.9874030404916381
+      },
+      {
+        "feature_a": "cell_area_px_p90",
+        "feature_b": "cell_major_axis_px_p90",
+        "abs_spearman": 0.9718557568607383
+      },
+      {
+        "feature_a": "cell_area_px_p90",
+        "feature_b": "cell_minor_axis_px_p90",
+        "abs_spearman": 0.9919966490719817
+      },
+      {
+        "feature_a": "cell_perimeter_px_median",
+        "feature_b": "cell_major_axis_px_median",
+        "abs_spearman": 0.9926040120034486
+      },
+      {
+        "feature_a": "cell_perimeter_px_median",
+        "feature_b": "cell_minor_axis_px_median",
+        "abs_spearman": 0.9712984802070662
+      },
+      {
+        "feature_a": "cell_perimeter_px_iqr",
+        "feature_b": "cell_major_axis_px_iqr",
+        "abs_spearman": 0.9848635388832421
+      },
+      {
+        "feature_a": "cell_perimeter_px_iqr",
+        "feature_b": "cell_minor_axis_px_iqr",
+        "abs_spearman": 0.9585623570622016
+      },
+      {
+        "feature_a": "cell_perimeter_px_p10",
+        "feature_b": "cell_major_axis_px_p10",
+        "abs_spearman": 0.9944134043767956
+      },
+      {
+        "feature_a": "cell_perimeter_px_p10",
+        "feature_b": "cell_minor_axis_px_p10",
+        "abs_spearman": 0.9847670764306926
+      },
+      {
+        "feature_a": "cell_perimeter_px_p90",
+        "feature_b": "cell_major_axis_px_p90",
+        "abs_spearman": 0.9903614105929297
+      },
+      {
+        "feature_a": "cell_perimeter_px_p90",
+        "feature_b": "cell_minor_axis_px_p90",
+        "abs_spearman": 0.9674667071733033
+      },
+      {
+        "feature_a": "cell_eccentricity_median",
+        "feature_b": "cell_eccentricity_p90",
+        "abs_spearman": 0.9595947753128035
+      },
+      {
+        "feature_a": "cell_solidity_median",
+        "feature_b": "cell_circularity_iqr",
+        "abs_spearman": 0.9600022969012387
+      },
+      {
+        "feature_a": "cell_solidity_iqr",
+        "feature_b": "cell_solidity_p10",
+        "abs_spearman": 0.9863721094942802
+      },
+      {
+        "feature_a": "cell_major_axis_px_p10",
+        "feature_b": "cell_minor_axis_px_p10",
+        "abs_spearman": 0.9689840682457972
+      },
+      {
+        "feature_a": "cell_rgb_mean_r_median",
+        "feature_b": "cell_rgb_mean_g_median",
+        "abs_spearman": 0.9706083866121971
+      },
+      {
+        "feature_a": "cell_rgb_mean_r_median",
+        "feature_b": "cell_rgb_mean_b_median",
+        "abs_spearman": 0.9706987622205531
+      },
+      {
+        "feature_a": "cell_rgb_mean_r_p10",
+        "feature_b": "cell_rgb_mean_g_p10",
+        "abs_spearman": 0.9595807057730465
+      },
+      {
+        "feature_a": "cell_rgb_mean_g_median",
+        "feature_b": "cell_rgb_mean_b_median",
+        "abs_spearman": 0.9828164214922968
+      },
+      {
+        "feature_a": "cell_rgb_mean_g_p10",
+        "feature_b": "cell_rgb_mean_b_p10",
+        "abs_spearman": 0.9541185019632269
+      },
+      {
+        "feature_a": "cell_rgb_mean_g_p90",
+        "feature_b": "cell_rgb_mean_b_p90",
+        "abs_spearman": 0.9927259848193404
+      },
+      {
+        "feature_a": "patch_primary_cell_count_median",
+        "feature_b": "patch_primary_cell_count_p10",
+        "abs_spearman": 0.9726153221515659
+      },
+      {
+        "feature_a": "patch_primary_cell_count_median",
+        "feature_b": "patch_primary_cell_count_p90",
+        "abs_spearman": 0.9586417644896232
+      },
+      {
+        "feature_a": "patch_primary_cell_count_median",
+        "feature_b": "patch_delaunay_edge_median_px_median",
+        "abs_spearman": 0.9801395280294409
+      },
+      {
+        "feature_a": "patch_primary_cell_count_median",
+        "feature_b": "patch_delaunay_edge_median_px_p90",
+        "abs_spearman": 0.9781803416200757
+      },
+      {
+        "feature_a": "patch_primary_cell_count_p10",
+        "feature_b": "patch_delaunay_edge_median_px_p90",
+        "abs_spearman": 0.9738843136779078
+      },
+      {
+        "feature_a": "patch_primary_cell_count_p90",
+        "feature_b": "patch_delaunay_edge_median_px_median",
+        "abs_spearman": 0.9673814693358636
+      },
+      {
+        "feature_a": "patch_nuclear_foreground_fraction_median",
+        "feature_b": "patch_nuclear_foreground_fraction_p10",
+        "abs_spearman": 0.9570116902213472
+      },
+      {
+        "feature_a": "patch_delaunay_edge_median_px_median",
+        "feature_b": "patch_delaunay_edge_median_px_p90",
+        "abs_spearman": 0.9637178571210484
+      }
+    ],
+    "patient_count_ranges": {
+      "patch_count_total": {
+        "min": 22,
+        "median": 185.0,
+        "max": 321
+      },
+      "patch_count_primary": {
+        "min": 22,
+        "median": 183.5,
+        "max": 307
+      },
+      "patch_count_low_tissue": {
+        "min": 0,
+        "median": 1.0,
+        "max": 31
+      },
+      "cell_count_total": {
+        "min": 937,
+        "median": 11384.5,
+        "max": 23384
+      },
+      "cell_count_primary": {
+        "min": 720,
+        "median": 8814.5,
+        "max": 18413
+      }
+    }
+  }
+}

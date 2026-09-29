@@ -1,0 +1,21 @@
+{
+  "arguments": {
+    "data_dir": "/kaggle/input/datasets/kawsersikder/dlbcl-kaggle-code",
+    "output_dir": "/kaggle/working/phase_01_lynsec_unet",
+    "epochs": 250,
+    "batch_size": 4,
+    "num_workers": 2,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "validation_fraction": 0.2,
+    "patience": 35,
+    "seed": 20260821
+  },
+  "device": "cuda",
+  "cuda_device": "Tesla T4",
+  "torch_version": "2.10.0+cu128",
+  "tile_count": 320,
+  "training_tile_count": 256,
+  "validation_tile_count": 64,
+  "scientific_limitation": "Validation is tile-level only; LyNSeC public release lacks patient IDs for grouped splitting."
+}

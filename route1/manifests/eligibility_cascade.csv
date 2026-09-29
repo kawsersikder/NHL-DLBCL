@@ -1,0 +1,9 @@
+step,samples,events,lost_from_previous,samples_with_patient_id,unique_patients_among_identified,samples_without_patient_id
+deposited,1310,683,0,583,534,727
+dlbcl_nos_icdo3,1042,584,268,528,487,514
+qc_clean,885,490,157,467,434,418
+pretreatment_biopsy,783,429,102,427,413,356
+curative_intent,645,298,138,357,344,288
+firstline_chop_r,556,250,89,313,301,243
+os_present,556,250,0,313,301,243
+os_time_positive,556,250,0,313,301,243

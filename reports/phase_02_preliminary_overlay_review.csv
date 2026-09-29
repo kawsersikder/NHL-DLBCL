@@ -1,0 +1,21 @@
+patient_id,patch_id,usable_preliminary,overall_quality_1_to_3,dominant_issue,notes,reviewer_type
+13901,3717,1,2,spurious_and_split_edge_structures,"Most nuclei are plausible; tissue-edge and elongated structures show mild fragmentation.",AI-assisted computational QC; not pathologist review
+13902,6116,1,2,mild_split_and_miss,"Broadly credible nuclear coverage with occasional small fragments and weak-nucleus misses.",AI-assisted computational QC; not pathologist review
+13964,27649,1,2,partial_tissue_patch,"Tissue is confined to part of the patch; blank background is rejected and tissue nuclei are usable.",AI-assisted computational QC; not pathologist review
+13965,14904,1,3,minimal,"Dense lymphoid nuclei are well covered with only occasional touching-cell errors.",AI-assisted computational QC; not pathologist review
+17648,18983,1,2,mild_over_split,"Dense tissue is covered; several touching or edge nuclei are split.",AI-assisted computational QC; not pathologist review
+17649,5053,0,1,spurious_linear_structure,"A long non-nuclear linear structure is segmented and fragmented into multiple instances; exclude this patch pending expert review.",AI-assisted computational QC; not pathologist review
+17653,3866,1,2,irregular_structures,"Major nuclei are detected; occasional elongated or irregular objects require sensitivity filtering.",AI-assisted computational QC; not pathologist review
+17659,22903,1,2,mild_split_and_miss,"Good dense-cell coverage with occasional watershed splits and faint-cell misses.",AI-assisted computational QC; not pathologist review
+17673,13386,1,2,mild_over_split,"Most nuclei are plausible; a minority of larger or touching nuclei are split.",AI-assisted computational QC; not pathologist review
+18835,18554,1,2,low_contrast_misses,"Low-contrast patch remains usable, with some weak nuclei under-detected.",AI-assisted computational QC; not pathologist review
+18840,14740,1,2,partial_tissue_and_split,"Partial-tissue patch with acceptable nuclear coverage and mild splitting.",AI-assisted computational QC; not pathologist review
+19681,17236,1,3,minimal,"Strong coverage and generally plausible instance boundaries.",AI-assisted computational QC; not pathologist review
+19685,24431,1,3,minimal,"Strong coverage with only occasional weak or touching-cell errors.",AI-assisted computational QC; not pathologist review
+19687,23464,1,3,minimal,"Strong coverage; elongated true nuclei are largely handled without broad background detection.",AI-assisted computational QC; not pathologist review
+26793,19435,1,2,debris_and_partial_tissue,"Degraded or debris-rich regions are mostly rejected; remaining nuclear instances are usable.",AI-assisted computational QC; not pathologist review
+26805,15108,1,2,mild_over_split,"Most nuclei are captured; several larger objects show watershed splits.",AI-assisted computational QC; not pathologist review
+26806,9765,1,2,elongated_structure_false_positives,"Usable overall, with a few elongated stromal or artefactual structures detected as nuclei.",AI-assisted computational QC; not pathologist review
+26811,12343,1,3,minimal,"Dense field has strong coverage and plausible separation.",AI-assisted computational QC; not pathologist review
+26817,186,1,3,minimal,"Dense field has strong coverage; only minor touching-cell imperfections.",AI-assisted computational QC; not pathologist review
+26838,22089,1,3,minimal,"Strong coverage and plausible boundaries with limited visible failure.",AI-assisted computational QC; not pathologist review

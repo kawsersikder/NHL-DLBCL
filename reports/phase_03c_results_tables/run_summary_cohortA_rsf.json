@@ -1,0 +1,45 @@
+{
+  "experiment": "E-009",
+  "cohort": "A",
+  "patients": 170,
+  "events": 58,
+  "excluded_patients": [],
+  "smoke_mode": false,
+  "protocol_lock_hash_at_split_generation": "94c9a6ef3a3a75ef2dfde58b7fa8e64ace8d664d5938313921d3a178465c2221",
+  "protocol_lock_hash_now": "94c9a6ef3a3a75ef2dfde58b7fa8e64ace8d664d5938313921d3a178465c2221",
+  "protocol_unchanged_since_splits": true,
+  "signed_by": "Kawser Sikder",
+  "seed": 20260830,
+  "n_bootstrap": 1000,
+  "split_ids_sha256": "ff22e9826533116d817f90153ee77ff82eb3a5f99269ad0577edd58de324961e",
+  "entropy_features_sha256": "e26af3eb472aa1eb39fa08f5650d1d501e277c9b3ebe0c0c17d434cae6b4ec3c",
+  "geometry_features_sha256": "b49b612cd39eca68e27ccd62fbe25fd0bc2ee8a846b2a55438c09f44195bb03a",
+  "primary_estimand": {
+    "definition": "paired delta Harrell C, M5 minus M1, cohort A (\u00a73.2)",
+    "n": 1000,
+    "mean": -0.023099086624417824,
+    "lower": -0.049876374074872665,
+    "upper": 0.0007847600900339503
+  },
+  "models_fitted": [
+    "M0a",
+    "M0b",
+    "M1",
+    "M2",
+    "M3",
+    "M4a",
+    "M4b",
+    "M4c",
+    "M5",
+    "S6_M1_rsf",
+    "S6_M4c_rsf",
+    "S6_M5_rsf"
+  ],
+  "environment": {
+    "python": "3.12.13",
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.9.0",
+    "scikit_survival": "0.28.0"
+  }
+}

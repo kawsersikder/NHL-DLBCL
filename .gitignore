@@ -1,0 +1,117 @@
+# =============================================================================
+#  NHL-DLBCL — repository exclusions
+#
+#  Guiding rule: the repository carries CODE, PROTOCOLS, and RESULT TABLES.
+#  Bulk data and images go to the Zenodo deposit and are referenced by DOI.
+#  Source datasets are never redistributed — they are pointed at, with
+#  checksums, via the PROVENANCE.md files that ARE tracked.
+#
+#  Working-tree totals at the time this file was written:
+#    DLBCLMorph.zip           30.3 GB      source dataset archive
+#    DLBCLMorph/              14.0 GB      extracted source dataset
+#    kaggle_upload_staging/   13.9 GB      staging copies for Kaggle uploads
+#    data/raw/.../cell_shapes.csv 356 MB   released source table
+#    kaggle/ *.parquet         157 MB      derived per-object tables
+#    kaggle/ *.png             225 MB      QC overlays
+#    reports/ contact sheets   130 MB      QC contact sheets
+#    models/he.tar             432 MB      third-party pretrained weights
+#  Everything above is excluded. What remains is roughly 10 MB of code,
+#  protocols, figures and result tables.
+# =============================================================================
+
+# --- Source dataset: 44 GB, and not ours to redistribute ---------------------
+# DLBCL-Morph is CC BY-NC 4.0 from TCIA/figshare. Re-hosting it here would
+# duplicate a public archive and muddy its licence terms. The download
+# instructions and MD5s live in data/raw/dlbcl_morph/PROVENANCE.md (tracked).
+/DLBCLMorph.zip
+/DLBCLMorph/
+/kaggle_upload_staging/
+/data/raw/*
+!/data/raw/dlbcl_morph
+/data/raw/dlbcl_morph/*
+!/data/raw/dlbcl_morph/PROVENANCE.md
+!/data/raw/gse181063
+/data/raw/gse181063/*
+!/data/raw/gse181063/PROVENANCE.md
+
+# --- Route 1 source downloads: ~282 MB, re-downloadable ----------------------
+# GEO series/platform files, PMC full texts and the GSE31312 supplement PDF.
+# Each is SHA-256 hashed in route1/manifests/source_registry.csv or the WP1
+# audit; GSE181063_RawData.txt.gz alone (134 MB) exceeds GitHub's file limit.
+/route1/data/raw/
+
+# --- Route 1 row-level extracts carrying exact calendar dates -----------------
+# Transcriptions of the GSE31312 supplement with per-case diagnosis, progression,
+# follow-up and death dates. Regenerated deterministically by
+# route1/src/wp1_gse31312_{extract,reconcile}.py from the hashed source PDF,
+# so they are not redistributed here.
+/route1/manifests/gse31312_table1_clinical.csv
+/route1/manifests/gse31312_table2_outcome.csv
+/route1/manifests/gse31312_linkage.csv
+/route1/manifests/gse31312_reconciled.csv
+/route1/reports/gse31312_extraction_discrepancies.csv
+
+# --- Third-party model weights ------------------------------------------------
+# models/he.tar is the LyNSeC/HoLy-Net checkpoint (Zenodo 10.5281/zenodo.8065174,
+# CC BY 4.0, 452 MB). Provenance and MD5 are tracked; the binary is not.
+/models/*
+!/models/PROVENANCE.md
+
+# --- Large derived artifacts -> Zenodo deposit, not git -----------------------
+*.parquet
+*.pt
+*.pth
+*.tar
+*.tar.gz
+*.zip
+*.bin
+
+# --- QC imagery: ~355 MB of overlays and contact sheets -----------------------
+# These belong in the Zenodo deposit so reviewers can audit segmentation
+# quality. Manuscript figures under reports/preprint/figures/ are NOT excluded.
+/kaggle/**/*.png
+/kaggle/**/*.jpg
+/kaggle/**/*.jpeg
+/kaggle/**/*.tif
+/kaggle/**/*.tiff
+/reports/phase_03_e007_ai_contact_sheets/
+
+# --- LaTeX build artifacts ----------------------------------------------------
+# main.pdf and main.bbl are deliberately kept: the PDF is the readable artifact
+# and preprint servers frequently require the .bbl alongside the sources.
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.blg
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+
+# --- Python -------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# --- Local tooling and scratch ------------------------------------------------
+/.tmp/
+/download.log
+
+# --- Credentials: never commit ------------------------------------------------
+# make_and_upload_patches.py reads kaggle.json from $KAGGLE_CONFIG_DIR or
+# ~/.kaggle — correct behaviour. This block is belt-and-braces.
+kaggle.json
+*.pem
+*.key
+.env
+.env.*
+
+# --- OS noise -----------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,13 @@
+{
+  "clinical_patient_count": 209,
+  "image_eligible_patient_count": 170,
+  "clinical_patients_without_he_patches": 39,
+  "he_patch_count": 30007,
+  "he_patient_directories": 170,
+  "released_cell_count": 1035909,
+  "released_cell_patients": 170,
+  "he_patients_not_in_clinical_table": [],
+  "released_cell_patients_not_in_clinical_table": [],
+  "manifest_contains_outcomes": false,
+  "eligibility_rule": "patient has at least one released H&E patch"
+}

@@ -5,7 +5,8 @@ bibliographic records only; opens no expression or outcome data.
 
 Outputs
   manifests/sig_pilot_pubmed_hits.csv   all PMIDs returned by the frozen query
-  manifests/sig_pilot_sample.csv        the 40 sampled records with title/abstract
+  manifests/sig_pilot_sample.csv        the 40 sampled records, bibliographic metadata only
+  data/raw/signature_pilot/sig_pilot_sample_with_abstracts.csv   same, with abstracts (git-ignored)
   data/raw/signature_pilot/efetch_sample.xml   raw PubMed XML (git-ignored)
 """
 from __future__ import annotations
@@ -80,7 +81,11 @@ def main() -> None:
         abstract = " ".join(
             (f"{t.get('Label')}: " if t.get("Label") else "") + text(t)
             for t in a.findall(".//Abstract/AbstractText"))
-        ids = {i.get("IdType"): text(i) for i in art.findall(".//ArticleIdList/ArticleId")}
+        # The article's own IDs only. A ".//ArticleIdList" search also matches the
+        # ID lists inside ReferenceList, which silently overwrote these with the
+        # IDs of cited papers in the first run (recorded as a pilot deviation).
+        ids = {i.get("IdType"): text(i)
+               for i in art.findall("./PubmedData/ArticleIdList/ArticleId")}
         rows[pmid] = {
             "pmid": pmid,
             "year": text(a.find(".//Journal/JournalIssue/PubDate/Year"))
@@ -95,11 +100,19 @@ def main() -> None:
     missing = [p for p in sample if p not in rows]
     assert not missing, f"efetch returned no record for {missing}"
 
-    with open(MAN / "sig_pilot_sample.csv", "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["draw_order", *rows[sample[0]].keys()])
+    # Abstracts are publisher text: they stay in the git-ignored raw folder, and
+    # the tracked manifest carries bibliographic metadata only.
+    fields = ["draw_order", *rows[sample[0]].keys()]
+    with open(RAW / "sig_pilot_sample_with_abstracts.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
         w.writeheader()
         for k, p in enumerate(sample, 1):
             w.writerow({"draw_order": k, **rows[p]})
+    with open(MAN / "sig_pilot_sample.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=[c for c in fields if c != "abstract"])
+        w.writeheader()
+        for k, p in enumerate(sample, 1):
+            w.writerow({"draw_order": k, **{c: v for c, v in rows[p].items() if c != "abstract"}})
 
     meta = {"retrieved_utc": stamp, "query": QUERY, "mindate": MINDATE,
             "maxdate": MAXDATE, "hits": count, "pmid_list_sha256": digest,

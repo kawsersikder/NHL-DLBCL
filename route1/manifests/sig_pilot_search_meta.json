@@ -1,0 +1,11 @@
+{
+  "retrieved_utc": "2026-09-29T19:44:13+00:00",
+  "query": "(\"diffuse large B-cell lymphoma\"[tiab] OR DLBCL[tiab]) AND (signature[tiab] OR \"risk score\"[tiab] OR \"risk model\"[tiab] OR \"prognostic model\"[tiab]) AND (gene[tiab] OR genes[tiab] OR expression[tiab]) AND (prognos*[tiab] OR survival[tiab])",
+  "mindate": "2013/01/01",
+  "maxdate": "2026/09/30",
+  "hits": 317,
+  "pmid_list_sha256": "5353658d30484d48a6051eab9a475af8bbd9ab76fd5e5448ed95e611d5bbc32f",
+  "seed": 20260930,
+  "n_sample": 40,
+  "n_with_pmcid": 26
+}

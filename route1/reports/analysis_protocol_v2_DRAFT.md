@@ -1,5 +1,12 @@
 # Route 1 — analysis protocol v2, DRAFT (Phase 4D)
 
+> **SUPERSEDED 2026-09-30 by Route 1 decision D-008.** The primary question has
+> been re-scoped to a pre-registered audit of published DLBCL prognostic
+> signatures against IPI and size-matched random gene sets. This draft was never
+> signed or frozen and is retained unchanged below for the record. The R0 IPI
+> baseline, population, transform order and synthetic tests carry over; the
+> Hallmark-program ladder (R1–R3) becomes one arm of the audit.
+
 **Date:** 2026-09-11 · **Status: DRAFT — NOT SIGNED, NOT FROZEN**
 
 Per supervisor 4/Phase 4D: this may be drafted now but **must not be frozen**

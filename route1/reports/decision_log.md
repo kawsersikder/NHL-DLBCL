@@ -6,6 +6,76 @@ This log is local to the Route 1 study; project-level entries also go to the
 
 ---
 
+## 2026-09-30 — D-008 · Route 1 re-scoped to a pre-registered audit of published DLBCL prognostic signatures
+
+**Decision (Kawser Sikder, 2026-09-30):** the primary question changes from
+*"do eight fixed Hallmark program scores add prognostic information beyond
+IPI?"* to:
+
+> Across published DLBCL prognostic gene-expression signatures, how many add
+> discrimination beyond IPI in independent, endpoint-verified cohorts, and how
+> many beat size-matched random gene sets?
+
+**Why:** the old question has prior art. Hong, Kahl & Gray, *Blood* 2013
+(PMID 23160463) tested 3 published signatures in 2 cohorts and found "little
+added value". The expected answer was on record, which made rigour the only
+contribution. The random-gene-set control (Venet et al., *PLoS Comput Biol*
+2011;7:e1002240) returned 0 PubMed records in lymphoma on 2026-09-30. Rationale
+in full: `reports/novelty_options_2026-09-30.md` (O-087).
+
+**Why this is legitimate now and would not be later.** State of outcome access
+at the time of this entry, verified against the scripts:
+
+- Outcome fields **have** been read, for endpoint and eligibility auditing only:
+  - GSE181063 reverse-KM follow-up (`phase1_identity_endpoint.py`,
+    `phase3R_population.py`);
+  - GSE31312 date-vs-released-OS reconciliation and death counts (WP1);
+  - one QC-variable check (`qc_fail` vs death, "no strong association observed").
+- **No expression-derived score has been associated with any outcome.** No
+  signature, program, or model has been fitted or evaluated against survival.
+  The Hallmark programs were frozen (O-081) but never scored against outcome.
+
+The question is therefore changed without knowledge of how any candidate
+predictor behaves.
+
+**What carries over unchanged:**
+- population and identity work (301 / 265 primary on GSE181063);
+- the WP1 verified GSE31312 endpoint;
+- cohort lineage tracing;
+- the probe→gene transform order and allowed universe (14,637 genes);
+- the R0 IPI baseline;
+- the synthetic test harness, where S4 (ties) still needs a real Breslow-vs-Efron comparison;
+- the session contract.
+
+**What changes:**
+- The eight Hallmark programs become **one arm** of the audit, not the primary
+  question.
+- New arms: R0 + each published signature; R0 + size-matched random gene sets.
+- New primary estimand: the fraction of eligible signature × cohort pairs whose
+  paired ΔC over R0 exceeds the size-matched random-set 95th percentile.
+- New artifact: a signature registry with verbatim gene lists and a
+  **lineage matrix**. A signature is never evaluated on a cohort that touched
+  its development.
+- `analysis_protocol_v2_DRAFT.md` is **superseded** (it was never signed or
+  frozen) and retained for the record.
+
+**What does not change:**
+- GSE181063's OS time origin remains UNRESOLVED and blocks that cohort; the
+  depositor request is still needed.
+- Data-use terms are still unchecked.
+- The GSE31312 vs GSE87371 final-test question now matters less, because in an
+  audit every eligible cohort is an evaluation cohort. It still needs deciding
+  in the protocol.
+
+**Not yet reviewed by the Mac-side supervisor.** This reverses the direction of
+the 2026-09-11 orders, whose text is not in the workspace.
+
+**First step:** a feasibility pilot on a deterministic sample of the literature
+(signature extractability, lineage, surviving pairs) before a protocol is
+drafted. The pilot reads papers only. It opens no expression or outcome data.
+
+---
+
 ## 2026-09-30 — D-007 · First git commit; D-001 partly closed
 
 Kawser asked for the first commit. It is made on the Windows copy, on branch

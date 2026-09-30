@@ -6,6 +6,29 @@ This log is local to the Route 1 study; project-level entries also go to the
 
 ---
 
+## 2026-09-30 — D-009 · Run the expression-level duplicate scan locally, not on Kaggle
+
+**Decision (Kawser Sikder, 2026-09-30):** run the outcome-blind duplicate scan
+(`dup_scan_plan.md`) on the Windows workstation.
+
+**This departs from the 2026-08-23 project rule** that all compute runs on
+Kaggle. It is recorded rather than silent. Grounds:
+
+- **The compute is light:** pairwise correlations over about 4,000 samples.
+- **It avoids a data-governance problem.** The data-use terms for these GEO
+  series are still unchecked (a standing Route 1 blocker). Kaggle would require
+  uploading the matrices first. Running locally needs no upload.
+- **It is outcome-blind by construction.** Only the expression tables are
+  parsed.
+
+Provenance is kept by recording the SHA-256 of every downloaded matrix and the
+local Python and numpy versions in the scan output.
+
+**Scope of the exception:** this scan only. It sets no precedent for
+outcome-reading analyses, whose compute location stays a separate decision.
+
+---
+
 ## 2026-09-30 — D-008 · Route 1 re-scoped to a pre-registered audit of published DLBCL prognostic signatures
 
 **Decision (Kawser Sikder, 2026-09-30):** the primary question changes from

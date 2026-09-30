@@ -156,6 +156,12 @@ number depends on its R-CHOP subsets.
 - **Not scanned:** RNA-seq cohorts (NCICCR, TCGA), GPL96 cohorts other than
   GSE57611 (GSE4475, GSE22470), and NanoString data.
 - The counts are a **lower bound** on overlap in the public DLBCL cohorts.
+- **Cross-version false negatives confirmed (addendum, 2026-09-30).** A post-hoc
+  check (`overlap_literature_newpairs_2026-09-30.md` §3) found about 12 probable
+  GSE32918 ↔ GSE69051 shared patients. They were identified by exact age plus a
+  rank-1 expression match, at cross-version r 0.24–0.68, below this run's 0.775
+  threshold. The GPL8432 × GPL14951 "no evidence" result above is therefore
+  superseded.
 
 ## 7. Next steps
 

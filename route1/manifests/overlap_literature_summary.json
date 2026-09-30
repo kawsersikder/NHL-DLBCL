@@ -1,0 +1,30 @@
+{
+  "GSE181063|GSE117556": {
+    "C": 4,
+    "R": 7,
+    "M": 3,
+    "N": 2,
+    "U": 2,
+    "analysis_users": 14,
+    "not_open_access": 3
+  },
+  "GSE10846|GSE23501": {
+    "R": 6,
+    "M": 2,
+    "C": 9,
+    "N": 12,
+    "D": 1,
+    "analysis_users": 18,
+    "not_open_access": 3
+  },
+  "union": {
+    "distinct_papers": 84,
+    "analysis_users": 66,
+    "C": 39,
+    "N": 15,
+    "R": 20,
+    "M": 6,
+    "U": 3,
+    "D": 1
+  }
+}

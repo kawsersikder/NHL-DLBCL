@@ -26,7 +26,7 @@ SEED=20260903; OUTER_FOLDS,OUTER_REPEATS,INNER_FOLDS=5,10,5; N_BOOT=1000; LABEL=
 GRID=[(h,d,lr) for h in (128,256) for d in (0.25,0.5) for lr in (1e-4,1e-3)]
 MAX_EP, PAT, WD = 50, 10, 1e-4
 ON_KAGGLE=Path("/kaggle/working").exists()
-KIN=Path("/kaggle/input") if ON_KAGGLE else Path("F:/Research Projects/NHL-DLBCL")
+KIN=Path("/kaggle/input") if ON_KAGGLE else Path(__file__).resolve().parents[2]
 def WOUT(enc): return (Path("/kaggle/working/phase_04_coo_abmil") if ON_KAGGLE else Path("reports/phase_04_coo_results_tables")) / enc
 def log(m): print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
 def find(n):

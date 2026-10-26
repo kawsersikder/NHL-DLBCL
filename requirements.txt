@@ -1,0 +1,30 @@
+# Python 3.12. Versions marked == match the recorded Kaggle environment
+# (kaggle/phase_03_morphology_survival/output_e007_full_extraction/environment.json).
+
+# Core scientific stack
+numpy==2.0.2
+pandas==2.3.3
+scipy==1.16.3
+scikit-learn
+pyarrow
+joblib
+pyyaml==6.0.3
+matplotlib
+
+# Survival analysis
+lifelines
+scikit-survival
+
+# Imaging and segmentation
+torch==2.10.0
+timm
+scikit-image==0.25.2
+Pillow
+tiatoolbox
+huggingface_hub
+
+# Literature and data retrieval (Study 2)
+requests
+remotezip
+pypdf
+PyMuPDF

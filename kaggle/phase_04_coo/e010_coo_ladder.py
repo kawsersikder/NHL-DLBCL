@@ -51,7 +51,7 @@ WOUT = Path("/kaggle/working/phase_04_coo_ladder") if ON_KAGGLE else Path("repor
 
 def log(m): print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
 def find(n):
-    cands = sorted((KIN if ON_KAGGLE else Path("F:/Research Projects/NHL-DLBCL")).rglob(n))
+    cands = sorted((KIN if ON_KAGGLE else Path(__file__).resolve().parents[2]).rglob(n))
     cands = [c for c in cands if c.is_file()]
     if not cands: raise FileNotFoundError(n)
     return cands[0]

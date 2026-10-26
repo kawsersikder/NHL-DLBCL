@@ -21,7 +21,7 @@ import numpy as np, pandas as pd
 from PIL import Image
 
 ON_KAGGLE = Path("/kaggle/working").exists()
-KIN = Path("/kaggle/input") if ON_KAGGLE else Path("F:/Research Projects/NHL-DLBCL")
+KIN = Path("/kaggle/input") if ON_KAGGLE else Path(__file__).resolve().parents[2]
 WOUT = Path("/kaggle/working/phase_04_coo_embeddings") if ON_KAGGLE else Path("data/processed/coo_embeddings")
 SEED = 20260903
 PATCH_CAP, IMG_SIZE = 200, 224

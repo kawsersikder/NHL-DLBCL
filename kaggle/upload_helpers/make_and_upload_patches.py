@@ -32,7 +32,7 @@ import zipfile
 from datetime import datetime
 from pathlib import Path
 
-ROOT = Path(r"F:\Research Projects\NHL-DLBCL")
+ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "DLBCLMorph" / "Patches"
 ORIG_ZIP = ROOT / "DLBCLMorph.zip"
 PREFIX = "DLBCL-Morph/Patches/"

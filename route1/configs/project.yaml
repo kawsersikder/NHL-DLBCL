@@ -26,7 +26,7 @@ study:
 
 environment:
   development_machine: windows_workspace
-  workspace_root: F:/Research Projects/NHL-DLBCL
+  workspace_root: .  # repository root
   # Heavy compute runs on Kaggle by standing project decision.
   compute: kaggle
   gpu: NVIDIA T4

@@ -1,6 +1,6 @@
 # Phase 0 — phase-end report
 
-**Date:** 2026-09-10 · **Machine:** Windows workspace `F:\Research Projects\NHL-DLBCL`
+**Date:** 2026-09-10 · **Machine:** local Windows workspace
 
 ---
 

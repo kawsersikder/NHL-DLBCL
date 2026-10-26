@@ -52,7 +52,7 @@ We do **NOT** claim H&E replaces IHC, and we do **NOT** claim diagnosis or treat
 ## 3. Code directory (where everything lives — for audit, you need not run it)
 
 ```
-F:\Research Projects\NHL-DLBCL\
+NHL-DLBCL/
   reports/
     phase_04_coo_analysis_protocol.md        # frozen design v1.0 (unsigned) — you review §1-2/§11
     phase_04_coo_amendment_A001_A007.md      # 7 fixes to apply before signing (novelty, TCGA method, C4, encoders, QC/uncertainty, EPV, tiling)

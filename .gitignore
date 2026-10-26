@@ -72,9 +72,10 @@
 /kaggle/**/*.tiff
 /reports/phase_03_e007_ai_contact_sheets/
 
+# --- Manuscript: kept private until publication ------------------------------
+/reports/preprint/
+
 # --- LaTeX build artifacts ----------------------------------------------------
-# main.pdf and main.bbl are kept on purpose. The PDF is the readable artifact,
-# and preprint servers often require the .bbl next to the sources.
 *.aux
 *.fdb_latexmk
 *.fls

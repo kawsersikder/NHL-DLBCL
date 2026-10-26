@@ -5,7 +5,7 @@ Code, protocols and results for two studies on evaluation rigour in diffuse larg
 - **Study 1** asks whether nuclear morphology from H&E slides adds prognostic value beyond clinical factors.
 - **Study 2** audits hidden sample overlap between public DLBCL gene-expression cohorts and measures how often the literature treats overlapping cohorts as independent.
 
-**Status:** The Study 1 manuscript is complete and not yet posted as a preprint. Study 2 is in progress.
+**Status:** The Study 1 manuscript is complete and will be shared once the preprint is posted. Study 2 is in progress.
 
 ## Key findings
 
@@ -39,7 +39,6 @@ NHL-DLBCL/
 ├── kaggle/               Kaggle-ready code for each pipeline phase
 ├── models/               PROVENANCE.md for third-party model weights
 ├── reports/              Phase reports, protocols and result tables
-│   └── preprint/         Manuscript sources, figures and compiled PDF
 ├── route1/               Study 2: cohort-overlap and gene-signature audit
 │   ├── configs/
 │   ├── data/             GEO sample metadata (raw downloads are excluded)
